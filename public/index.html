@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Server Monitoring App</title>
+  <script>
+    async function fetchMetrics() {
+      const cpuResponse = await fetch('/metrics/cpu');
+      const cpuData = await cpuResponse.text();
+      document.getElementById('cpu-usage').innerText = cpuData;
+
+      const ramResponse = await fetch('/metrics/ram');
+      const ramData = await ramResponse.text();
+      document.getElementById('ram-usage').innerText = ramData;
+    }
+
+    async function executeCommand() {
+      const command = document.getElementById('command').value;
+      const response = await fetch('/command/execute', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ command })
+      });
+      const result = await response.text();
+      document.getElementById('command-output').innerText = result;
+    }
+
+    window.onload = fetchMetrics;
+  </script>
+</head>
+<body>
+  <h1>Server Monitoring App</h1>
+  <div>
+    <h2>System Metrics</h2>
+    <p>CPU Usage: <span id="cpu-usage"></span></p>
+    <p>RAM Usage: <span id="ram-usage"></span></p>
+  </div>
+  <div>
+    <h2>Execute Command</h2>
+    <input type="text" id="command" placeholder="Enter command">
+    <button onclick="executeCommand()">Execute</button>
+    <pre id="command-output"></pre>
+  </div>
+</body>
+</html>
